@@ -31,7 +31,7 @@ class BTcpConnection:
 
 
 class BTcpPacket:
-    def __init__(self, sport=None, dport=None, seq=None, ack=None, data_off=None, win_size=None, flag=0, data=b""):
+    def __init__(self, sport=0, dport=0, seq=0, ack=0, data_off=0, win_size=0, flag=0, data=b""):
         self.sport = sport
         self.dport = dport
         self.seq = seq
@@ -41,7 +41,16 @@ class BTcpPacket:
         self.flag = flag
         self.data = data
 
+    def regulate(self):
+        # Make sure the values don't stir up
+        self.seq &= 0xFF
+        self.ack &= 0xFF
+        self.data_off &= 0xFF
+        self.win_size &= 0xFF
+        self.flag &= 1  # Could be 0xFF, but we only need "retransmission" flag
+
     def __bytes__(self):
+        self.regulate()
         return bytes([
             self.sport, self.dport, self.seq, self.ack,
             self.data_off, self.win_size, self.flag,
