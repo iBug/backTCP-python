@@ -45,7 +45,7 @@ If you started those programs properly, packets coming out from the sender will 
 - Nothing happens, packets pass through as normal
 - A packet is dropped (unless it's a retransmitted packet, which will never be dropped - this is consistent with the lab specification)
 - Two packets are swapped
-- Three packets are shuffled and up to one of them may be dropped (still, retransmitted packets won't be dropped, but may be shuffled)
+- Three packets are shuffled and up to one of them may be duplicated or dropped (still, retransmitted packets won't be dropped, but may be shuffled or duplicated)
 
 You should consult the man page or use `--help` if you want to know which command does what.
 

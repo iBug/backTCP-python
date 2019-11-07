@@ -14,7 +14,9 @@ from utils import *
 #   0: Do nothing and forward
 #   1: Drop unless retransmitted
 #   2: Swap two packets
-#   3: Randomly order 3 packets and maybe drop one
+#   3: Randomly order 3 packets and maybe drop one and maybe duplicate one
+#
+# You can configure the following list to change the possibility of each action
 ACTIONS = [0] * 7 + [1] * 5 + [2] * 5 + [3] * 3
 
 
@@ -75,8 +77,12 @@ def btMITM(out_addr, out_port, in_addr, in_port):
             # Shuffle three packets ...
             random.shuffle(packets)
             for i in range(len(packets)):
+                if random.random() >= 0.8:
+                    # ... and maybe duplicate one ...
+                    packets.append(random.choice(packets))
+                    break
                 if not packets[i].flag & 1 and random.random >= 0.5:
-                    # ... and drop up to 1 at random
+                    # ... or drop up to 1 at random
                     packets.pop[i]
                     break
 
