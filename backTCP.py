@@ -35,6 +35,8 @@ class BTcpConnection:
         self.sock.settimeout(timeout)
 
     def send(self, packet):
+        if packet is None:
+            packet = b''
         if self.mode == 'send':
             self.conn.sendall(bytes(packet))
         else:
