@@ -7,21 +7,16 @@ from utils import log
 class BTcpConnection:
     def __init__(self, mode, addr, port):
         # Create a TCP socket
-        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.conn = None
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.conn = self.sock
         self.remote_addr = None
+        self.mode = mode
 
         if mode == 'send':
             self.remote_addr = addr, port
             self.sock.connect(self.remote_addr)
-            self.conn = self.sock
-
         elif mode == 'recv':
             self.sock.bind((addr, port))
-            log('info', f"Listening on {addr} port {port}")
-            self.sock.listen(1)
-            self.conn, self.remote_addr = self.sock.accept()
-            log('info', f"Accepted connection from {self.remote_addr[0]} port {self.remote_addr[1]}")
         else:
             raise ValueError(f"Unexpected mode {mode}")
 
@@ -30,25 +25,24 @@ class BTcpConnection:
 
     def close(self):
         try:
-            self.conn.close()
-        except Exception:
-            pass
-        try:
             self.sock.close()
         except Exception:
             pass
-        # set them to None so other code knows
-        self.conn = None
+        # set this to None so other code knows
         self.sock = None
 
     def settimeout(self, timeout):
         self.sock.settimeout(timeout)
 
     def send(self, packet):
-        self.conn.sendall(bytes(packet))
+        if self.mode == 'send':
+            self.conn.sendall(bytes(packet))
+        else:
+            self.conn.sendto(bytes(packet), self.remote_addr)
 
     def recv(self):
-        return BTcpPacket.from_bytes(self.conn.recv(7 + 64))
+        data, self.remote_addr = self.sock.recvfrom(8 + 64)
+        return BTcpPacket.from_bytes(data)
 
 
 
@@ -75,8 +69,12 @@ class BTcpPacket:
         self.regulate()
         return bytes([
             self.sport, self.dport, self.seq, self.ack,
-            self.data_off, self.win_size, self.flag,
+            self.data_off, self.win_size, self.flag, self.data_len,
         ]) + bytes(self.data)
+
+    @property
+    def data_len(self):
+        return len(self.data)
 
     @staticmethod
     def from_bytes(data):
@@ -84,7 +82,7 @@ class BTcpPacket:
             return None
         return BTcpPacket(
             sport=data[0], dport=data[1], seq=data[2], ack=data[3],
-            data_off=data[4], win_size=data[5], flag=data[6], data=data[7:]
+            data_off=data[4], win_size=data[5], flag=data[6], data=data[8:]
         )
 
     def __repr__(self):
