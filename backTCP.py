@@ -76,7 +76,7 @@ class BTcpPacket:
 def send(data, addr, port):
     conn = BTcpConnection('send', addr, port)
 
-    chunks = [data[x:x+64] for x in range(len(data) // 64 - 1)]
+    chunks = [data[x * 64:x * 64 + 64] for x in range(len(data) // 64 - 1)]
     packets = [BTcpPacket(seq=i & 0xFF, data_off=7, data=chunk) for i, chunk in enumerate(chunks)]
 
     # TODO: "data" is a bytes object
