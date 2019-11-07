@@ -31,6 +31,9 @@ class BTcpConnection:
         except Exception:
             pass
 
+    def settimeout(self, timeout):
+        self.sock.settimeout(timeout)
+
     def send(self, packet):
         self.conn.sendall(bytes(packet))
 
@@ -108,6 +111,7 @@ def recv(addr, port):
     # TODO: Assemble received binary data into `data` variable.
     #       Make sure you're handling disorder and timeouts properly
 
+    conn.settimeout(0.010)  # 10ms timeout
     while True:
         p = conn.recv()
         if p is None:  # No more packets
