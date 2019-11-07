@@ -12,7 +12,7 @@ It's recommended that you write this program on Python 3.6 or newer. Any issue c
 
 ### Testing & Running
 
-After you've filled out all required code parts, you can run the program to test if your implementation works correctly:
+The curremt version of the code contains a minimal proof of concept. You can verify that it sends and receives a file *unreliably* using the following commands:
 
 ```shell
 # Generate a file for input
@@ -27,6 +27,12 @@ python3 send.py input.bin
 # Compare the results
 cmp input.bin output.bin
 ```
+
+It will generate an `output.bin` that's identical to `input.bin`. This verifies that the code template is correct.
+
+---
+
+After you've filled out all required code parts, you can run the same commands against a test channel to verify your implementation.
 
 You should consult the man page or use `--help` if you want to know which command does what.
 
