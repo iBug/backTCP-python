@@ -61,6 +61,7 @@ def btMITM(out_addr, out_port, in_addr, in_port):
                 # The last ones aren't manipulated
                 for p in packets:
                     out_sock.send(p)
+                out_sock.send(None)  # Tell the receiver to close
                 in_sock.close()
                 out_sock.close()
                 return
