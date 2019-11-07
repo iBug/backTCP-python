@@ -27,6 +27,7 @@ class BTcpConnection:
 
     def __del__(self):
         try:
+            self.conn.close()
             self.sock.close()
         except Exception:
             pass
@@ -76,6 +77,15 @@ class BTcpPacket:
             sport=data[0], dport=data[1], seq=data[2], ack=data[3],
             data_off=data[4], win_size=data[5], flag=data[6], data=data[7:]
         )
+
+    def __repr__(self):
+        if len(self.data) > 1:
+            s = f"<{len(self.data)} bytes>"
+        elif len(self.data) == 0:
+            s = "<empty>"
+        else:
+            s = "<1 byte>"
+        return f"BTcpPacket(seq={self.seq}, ack={self.ack}, win_size={self.win_size}, flag={self.flag}, data={s})"
 
 
 def send(data, addr, port):
