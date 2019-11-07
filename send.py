@@ -20,7 +20,7 @@ def parse_args():
 def main():
     global log_level
     args = parse_args()
-    log_level = args.log_level
+    log_level = validate_log_level(args.log_level)
 
     with open(args.filename, "rb") as f:
         data = f.read()

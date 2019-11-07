@@ -25,6 +25,21 @@ LOG_STR_MAPPING = {
 log_level = LOG_WARNING
 
 
+def validate_log_level(level):
+    try:
+        level = int(level)
+        if 0 <= level <= LOG_ERROR:
+            return level
+    except Exception:
+        pass
+
+    if isinstance(level, str):
+        try:
+            return LOG_STR_MAPPING[level.lower()]
+        except KeyError:
+            raise ValueError(f"Invalid log level {level!r}") from None
+
+
 def log(level, *args):
     if not isinstance(level, int):
         try:
