@@ -34,6 +34,19 @@ It will generate an `output.bin` that's identical to `input.bin`. This verifies 
 
 After you've filled out all required code parts, you can run the same commands against a test channel to verify your implementation.
 
+There's a simple test channel implementation in `testch.py`. You should run the programs in this order:
+
+- Start the receiver (pay attention to the address and port)
+- Start the test channel. Use `-a` and `-p` options to give information (namely, address and port) about the receiver to the test channel. You can also specify the address and port to listen for the sender using `-A` and `-P` options.
+- Finally, start the sender. Note that the default port for the sender is the same as that of the receiver, so you'll probably want to change (at least) the port using the `-p` option.
+
+If you started those programs properly, packets coming out from the sender will be randomly manipulated by the test channel before going into the receiver. As of the current version of the test channel, packets will randomly encounter one of the following disorders:
+
+- Nothing happens, packets pass through as normal
+- A packet is dropped (unless it's a retransmitted packet, which will never be dropped - this is consistent with the lab specification)
+- Two packets are swapped
+- Three packets are shuffled and up to one of them may be dropped (still, retransmitted packets won't be dropped, but may be shuffled)
+
 You should consult the man page or use `--help` if you want to know which command does what.
 
 ## Regulations

@@ -15,7 +15,7 @@ from utils import *
 #   1: Drop unless retransmitted
 #   2: Swap two packets
 #   3: Randomly order 3 packets and maybe drop one
-ACTIONS = [0] * 7 + [1] * 4 + [2] * 3 + [3]
+ACTIONS = [0] * 7 + [1] * 5 + [2] * 5 + [3] * 3
 
 
 def pass_through(from_socket, to_socket):
@@ -56,24 +56,27 @@ def btMITM(out_addr, out_port, in_addr, in_port):
             p = in_sock.recv()
             if p is None:
                 p.close()
+                # The last ones aren't manipulated
+                for p in packets:
+                    out_sock.send(p)
                 return
             packets.append(p)
 
         if action == 0:
-            pass
+            pass # through
         elif action == 1:
             if not packets[0].flag & 1:
                 # Packet loss
                 packets.pop()
         elif action == 2:
             # Swap packets
-            packets = [packets[0], packets[1]]
+            packets = packets[::-1]
         else:
-            # Swap three packets ...
+            # Shuffle three packets ...
             random.shuffle(packets)
             for i in range(len(packets)):
                 if not packets[i].flag & 1 and random.random >= 0.5:
-                    # ... and drop up to one at random
+                    # ... and drop up to 1 at random
                     packets.pop[i]
                     break
 
