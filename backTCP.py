@@ -26,11 +26,20 @@ class BTcpConnection:
             raise ValueError(f"Unexpected mode {mode}")
 
     def __del__(self):
+        self.close()
+
+    def close(self):
         try:
             self.conn.close()
+        except Exception:
+            pass
+        try:
             self.sock.close()
         except Exception:
             pass
+        # set them to None so other code knows
+        self.conn = None
+        self.sock = None
 
     def settimeout(self, timeout):
         self.sock.settimeout(timeout)
