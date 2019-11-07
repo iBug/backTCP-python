@@ -12,7 +12,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description="receive a file from backTCP", epilog="This program is created by iBug")
     parser.add_argument('filename', metavar="file", help="the name to save received file as")
     parser.add_argument('-a', '-A', '--address', metavar="addr", help="address to listen for", default="0.0.0.0")
-    parser.add_argument('-p', '--port', metavar="port", help="port to listen on", default=6666)
+    parser.add_argument('-p', '--port', metavar="port", type=int, help="port to listen on", default=6666)
     parser.add_argument('-l', '--log-level', metavar="level", help="logging level", default=LOG_WARNING)
     return parser.parse_args()
 
