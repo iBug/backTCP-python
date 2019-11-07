@@ -67,6 +67,8 @@ class BTcpPacket:
 
     @staticmethod
     def from_bytes(data):
+        if not data:
+            return None
         return BTcpPacket(
             sport=data[0], dport=data[1], seq=data[2], ack=data[3],
             data_off=data[4], win_size=data[5], flag=data[6], data=data[7:]
@@ -76,7 +78,7 @@ class BTcpPacket:
 def send(data, addr, port):
     conn = BTcpConnection('send', addr, port)
 
-    chunks = [data[x * 64:x * 64 + 64] for x in range(len(data) // 64 - 1)]
+    chunks = [data[x * 64:x * 64 + 64] for x in range((len(data) - 1) // 64 + 1)]
     packets = [BTcpPacket(seq=i & 0xFF, data_off=7, data=chunk) for i, chunk in enumerate(chunks)]
 
     # TODO: "data" is a bytes object
@@ -106,12 +108,11 @@ def recv(addr, port):
     # TODO: Assemble received binary data into `data` variable.
     #       Make sure you're handling disorder and timeouts properly
 
-    try:
-        while True:
-            p = conn.recv()
-            data += p.data
-    except Exception:
-        pass
+    while True:
+        p = conn.recv()
+        if p is None:  # No more packets
+            break
+        data += p.data
 
     # End of your own code
 
