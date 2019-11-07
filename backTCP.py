@@ -30,6 +30,24 @@ class BTcpConnection:
             pass
 
 
+class BTcpPacket:
+    def __init__(self, sport=None, dport=None, seq=None, ack=None, data_off=None, win_size=None, flag=0, data=b""):
+        self.sport = sport
+        self.dport = dport
+        self.seq = seq
+        self.ack = ack
+        self.data_off = data_off
+        self.win_size = win_size
+        self.flag = flag
+        self.data = data
+
+    def __bytes__(self):
+        return bytes([
+            self.sport, self.dport, self.seq, self.ack,
+            self.data_off, self.win_size, self.flag,
+        ]) + bytes(self.data)
+
+
 def send(data, addr, port):
     conn = BTcpConnection('send', addr, port)
 
