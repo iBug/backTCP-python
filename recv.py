@@ -18,9 +18,8 @@ def parse_args():
 
 
 def main():
-    global log_level
     args = parse_args()
-    log_level = validate_log_level(args.log_level)
+    set_log_level(args.log_level)
 
     with open(args.filename, "wb") as f:
         f.write(backTCP.recv(args.address, args.port))

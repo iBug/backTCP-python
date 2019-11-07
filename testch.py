@@ -51,6 +51,7 @@ def btMITM(out_addr, out_port, in_addr, in_port):
 
     while True:
         action = random.choice(ACTIONS)
+        log('debug', f"Action: {action}")
         packet_needed = max(1, action)
         packet_count = 0
 
@@ -102,11 +103,10 @@ def parse_args():
 
 
 def main():
-    global log_level
     args = parse_args()
-    log_level = validate_log_level(args.log_level)
+    set_log_level(args.log_level)
 
-    btMITM(args.address, args.port, args.in_addr, args.in_port)
+    btMITM(args.out_addr, args.out_port, args.in_addr, args.in_port)
 
 
 if __name__ == '__main__':

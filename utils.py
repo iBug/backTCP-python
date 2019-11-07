@@ -40,6 +40,11 @@ def validate_log_level(level):
             raise ValueError(f"Invalid log level {level!r}") from None
 
 
+def set_log_level(level):
+    global log_level
+    log_level = validate_log_level(level)
+
+
 def log(level, *args):
     if not isinstance(level, int):
         try:
@@ -48,5 +53,5 @@ def log(level, *args):
             raise ValueError(f"Unexpected logging level {level!r}") from None
     if level < log_level:
         return  # Discard unwanted logs
-    s = "{} {}".format(LOG_PREFIX[level], " ".join(map(args, str)))
+    s = "{} {}".format(LOG_PREFIX[level], " ".join(map(str, args)))
     print(s, file=sys.stderr)
