@@ -84,9 +84,9 @@ def btMITM(out_addr, out_port, in_addr, in_port):
                     # ... and maybe duplicate one ...
                     packets.append(random.choice(packets))
                     break
-                if not packets[i].flag & 1 and random.random >= 0.5:
+                if not packets[i].flag & 1 and random.random() >= 0.5:
                     # ... or drop up to 1 at random
-                    packets.pop[i]
+                    packets.pop(i)
                     break
 
         for p in packets:
