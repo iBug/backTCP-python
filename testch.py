@@ -10,6 +10,14 @@ import backTCP
 from utils import *
 
 
+# Actions: What to do for a stream of incoming packets
+#   0: Do nothing and forward
+#   1: Drop unless retransmitted
+#   2: Swap two packets
+#   3: Randomly order 3 packets and maybe drop one
+ACTIONS = [0] * 7 + [1] * 4 + [2] * 3 + [3]
+
+
 def pass_through(from_socket, to_socket):
     def handler(from_socket, to_socket):
         while True:
@@ -40,18 +48,38 @@ def btMITM(out_addr, out_port, in_addr, in_port):
     packets = []
 
     while True:
-        p = in_sock.recv()
-        if p is None:
-            p.close()
-            return
-        packets.append(p)
+        action = random.choice(ACTIONS)
+        packet_needed = max(1, action)
+        packet_count = 0
 
-        # TODO: Shuffle and drop randomly
-        # XXX: When to perform this action?
-        if len(packets) >= 0:
-            for p in packets:
-                out_sock.send(p)
-            packets = []
+        while packet_count < packet_needed:
+            p = in_sock.recv()
+            if p is None:
+                p.close()
+                return
+            packets.append(p)
+
+        if action == 0:
+            pass
+        elif action == 1:
+            if not packets[0].flag & 1:
+                # Packet loss
+                packets.pop()
+        elif action == 2:
+            # Swap packets
+            packets = [packets[0], packets[1]]
+        else:
+            # Swap three packets ...
+            random.shuffle(packets)
+            for i in range(len(packets)):
+                if not packets[i].flag & 1 and random.random >= 0.5:
+                    # ... and drop up to one at random
+                    packets.pop[i]
+                    break
+
+        for p in packets:
+            out_sock.send(p)
+        packets = []
 
 
 def parse_args():
