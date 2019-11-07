@@ -14,6 +14,8 @@ class BTcpConnection:
         if mode == 'send':
             self.remote_addr = addr, port
             self.sock.connect(self.remote_addr)
+            self.conn = self.sock
+
         elif mode == 'recv':
             self.sock.bind((addr, port))
             log('info', f"Listening on {addr} port {port}")
@@ -28,6 +30,13 @@ class BTcpConnection:
             self.sock.close()
         except Exception:
             pass
+
+    def send(self, packet):
+        self.conn.sendall(bytes(packet))
+
+    def recv(self):
+        return BTcpPacket.from_bytes(b'')
+
 
 
 class BTcpPacket:
@@ -56,9 +65,16 @@ class BTcpPacket:
             self.data_off, self.win_size, self.flag,
         ]) + bytes(self.data)
 
+    @staticmethod
+    def from_bytes(data):
+        return BTcpPacket()
+
 
 def send(data, addr, port):
     conn = BTcpConnection('send', addr, port)
+
+    # TODO: "data" is a bytes object
+    #       You should split it up into BTcpPacket objects
 
 
 def recv(addr, port):
