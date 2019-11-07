@@ -58,11 +58,13 @@ def btMITM(out_addr, out_port, in_addr, in_port):
         while packet_count < packet_needed:
             p = in_sock.recv()
             if p is None:
-                p.close()
                 # The last ones aren't manipulated
                 for p in packets:
                     out_sock.send(p)
+                in_sock.close()
+                out_sock.close()
                 return
+            packet_count += 1
             packets.append(p)
 
         if action == 0:
