@@ -76,11 +76,20 @@ class BTcpPacket:
 def send(data, addr, port):
     conn = BTcpConnection('send', addr, port)
 
+    chunks = [data[x:x+64] for x in range(len(data) // 64 - 1)]
+    packets = [BTcpPacket(seq=i & 0xFF, data_off=7, data=chunk) for i, chunk in enumerate(chunks)]
+
     # TODO: "data" is a bytes object
     #       You should split it up into BTcpPacket objects, and call conn.send(pkt) on each one
     # Example: > p = BTcpPacket(data=b"hello")
     #          > conn.send(p)
 
+    # TODO: Delete the following code and add your own
+
+    for p in packets:
+        conn.send(p)
+
+    # End of your own code
     return
 
 
@@ -93,7 +102,17 @@ def recv(addr, port):
     #       Received packets are of class BTcpPacket, so you can access packet information and content easily
     # Example: > p = conn.recv()
     #          Now p.seq, p.ack, p.data (and everything else) are available
+
     # TODO: Assemble received binary data into `data` variable.
     #       Make sure you're handling disorder and timeouts properly
+
+    try:
+        while True:
+            p = conn.recv()
+            data += p.data
+    except Exception:
+        pass
+
+    # End of your own code
 
     return data
