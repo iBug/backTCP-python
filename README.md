@@ -6,13 +6,13 @@ This is a template code for the backTCP course lab of « Computer Networking » 
 
 You should read this document and all comments in `backTCP.py` file, and then fill out code segments marked as `TODO` in `backTCP.py`. There's no need to change any other file but you're free to if you want.
 
-Note that all binary data are assumes to be of the type `bytes` in this program.
+Note that all binary data are assumed to be of the type `bytes` in this program.
 
 It's recommended that you write this program on Python 3.6 or newer. Any issue caused by an incompatible Python version (namely, Python 3.5 or lower) will be disregarded.
 
 ### Testing & Running
 
-The curremt version of the code contains a minimal proof of concept. You can verify that it sends and receives a file *unreliably* using the following commands:
+The current version of the code contains a minimal proof of concept. You can verify that it sends and receives a file *unreliably* using the following commands:
 
 ```shell
 # Generate a file for input
