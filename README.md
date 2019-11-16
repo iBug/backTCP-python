@@ -16,7 +16,7 @@ The current version of the code contains a minimal proof of concept. You can ver
 
 ```shell
 # Generate a file for input
-dd if=/dev/urandom of=output.bin bs=64k count=1 status=none
+dd if=/dev/urandom of=input.bin bs=64k count=1 status=none
 
 # Start a server and listen for connection
 python3 recv.py output.bin
