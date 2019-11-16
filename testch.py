@@ -56,7 +56,13 @@ def btMITM(out_addr, out_port, in_addr, in_port):
         packet_count = 0
 
         while packet_count < packet_needed:
-            p = in_sock.recv()
+            try:
+                p = in_sock.recv()
+            except socket.error as e:
+                if e.errno == errno.ECONNRESET:
+                    p = None
+                else:
+                    raise
             if p is None:
                 # The last ones aren't manipulated
                 for p in packets:

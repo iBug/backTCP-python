@@ -30,6 +30,7 @@ class BTcpConnection:
 
     def close(self):
         try:
+            self.conn.shutdown(socket.SHUT_RDWR)
             self.conn.close()
         except Exception:
             pass
