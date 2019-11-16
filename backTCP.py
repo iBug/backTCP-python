@@ -50,8 +50,8 @@ class BTcpConnection:
             packet = b''
         self.conn.sendall(bytes(packet))
 
-    def recv(self):
-        return BTcpPacket.from_bytes(self.conn.recv(7 + 64))
+    def recv(self, size=None):
+        return BTcpPacket.from_bytes(self.conn.recv(size or (7 + 64)))
 
 
 
